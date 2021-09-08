@@ -234,7 +234,7 @@ dom.drawHtml = function(data) {
         div.appendChild(h5);
         clip.transcript = clip.transcript.replace("covid", "<strong>covid</strong>").replace("prison", "<strong>prison</strong>");
         let h4 = document.createElement("h4");
-        h4.innerHTML = `${clip.date} // ${clip.creator} // ${clip.distanceScore} <button class="vid" data-vid="${clip.video}" data-distance="${clip.distanceScore}" href="#">&#9654;</button>`;
+        h4.innerHTML = `${clip.date} // ${clip.creator} // term distance: ${clip.distanceScore} <button class="vid" data-vid="${clip.video}" data-distance="${clip.distanceScore}" href="#">&#9654;</button>`;
         div.appendChild(h4);
         let p = document.createElement("p");
         p.innerHTML = `<p> ${clip.transcript} </p>
