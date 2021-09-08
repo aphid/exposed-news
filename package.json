@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "csv-parse": "^4.16.0",
+    "ffmpeg-normalize": "^1.8.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-promise": "^2.0.3",
+    "googleapis": "^80.1.0",
+    "json2csv": "^5.0.6",
+    "longest-common-subsequence": "^1.0.4",
+    "luxon": "^2.0.1",
+    "moment": "^2.29.1",
+    "node-feedly-developer-client": "^0.0.3",
+    "normalize-volume": "^1.0.7",
+    "nouislider": "^15.4.0",
+    "request-promise-native": "^1.0.9",
+    "smith-walterman-score": "^1.0.3",
+    "string-similarity": "^4.0.4",
+    "striptags": "^3.2.0"
+  }
+}
