@@ -1,0 +1,119 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="content-language" content="en-us" />
+    <link rel="stylesheet" href="./node_modules/nouislider/dist/nouislider.min.css">
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .active {
+            background: orange;
+        }
+
+
+        p {
+            margin: 30px;
+        }
+
+        h4 {
+            font-size: 1.0em;
+            margin: 0;
+        }
+
+        h5 {
+            font-size: 1.3em;
+            padding: 0;
+            margin: 0;
+        }
+
+        video {
+            height: 120px;
+        }
+
+        button {
+            font-size: 2.5em;
+        }
+
+        #creators {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            font-size: 8pt;
+        }
+
+        #creators p {
+            margin: unset;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: all 0.25s linear;
+
+        }
+
+        #creators p:hover {
+            text-decoration: underline;
+        }
+
+        .transcript {
+            margin: 0 150px;
+            font-size: 10pt;
+
+        }
+
+        .transcript button {
+            font-size: 1em;
+        }
+
+        #clear {
+            display: none;
+            cursor: pointer;
+        }
+
+        .vid {
+            color: lightgreen;
+        }
+
+        video {
+            position: fixed;
+            bottom: 5px;
+            right: 5px;
+            height: 200px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        #slider {
+            display: inline-block;
+            width: 600px;
+            margin: 17px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+</head>
+
+<body>
+    <video></video>
+    <div><button class="mode" id='chron' title="chronological">&#128197;</button><button class="mode" id="score" title="distance score">⟷</button><button id="direction" data-dir="desc">⬇</button></div>
+    <div id="dates">
+        <span id="lowest"></span>
+        <div id="slider"></div>
+        <span id="highest"></span>
+    </div>
+    <h3><span id="results"></span> results <span id="clear">clear</span></h3>
+
+    <section id="findings">
+
+    </section>
+    <div id="creators"><strong>networks</strong></div>
+    <script src="./node_modules/nouislider/dist/nouislider.min.js"></script>
+    <script src="newsscriptclient.js"></script>
+    <script src="newsscript.js"></script>
+
+</body>
+
+</html>
