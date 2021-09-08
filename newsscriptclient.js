@@ -170,7 +170,7 @@ let processCreators = function(data) {
             dom.updateResults();
 
         });
-
+        dom.creas = creators;
 
     }
 
@@ -185,13 +185,31 @@ let processDates = function() {
         let date = clip.dataset.date;
         date = moment(date, "YYYY-MM-DD");
         date = date.format("X");
-        console.log(date, low, high);
+        //console.log(date, low, high);
         if (date > low && date < high) {
             clip.style.display = "block";
         } else {
             clip.style.display = "none";
         }
     }
+
+    for (let p of document.querySelectorAll("#creators p")) {
+        let spl = p.textContent.split(":");
+        let name = spl[0].trim();
+        let num = spl[1].trim();
+        let query = '.transcript[data-creator="' + name + '"]';
+        let count = document.querySelectorAll(query);
+        if (count.length) {
+            let also = 0;
+            for (let c of count) {
+                if (c.style.display === "block") {
+                    also++;
+                }
+            }
+            p.textContent = `${name}: ${also}`;
+        }
+    }
+
 
     dom.updateResults();
 }
