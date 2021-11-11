@@ -9,14 +9,20 @@
             font-family: sans-serif;
         }
 
-        .active {
-            background: orange;
+
+
+        .hidden {
+            display: none;
         }
 
 
         p {
             margin: 30px;
+            line-height: 1.6em;
+
         }
+
+
 
         h4 {
             font-size: 1.0em;
@@ -29,12 +35,28 @@
             margin: 0;
         }
 
+        .description {
+            font-weight: bolder;
+        }
+
         video {
-            height: 120px;
+            height: 70%;
+            top: 0;
+            max-width: 350px;
         }
 
         button {
             font-size: 2.5em;
+        }
+
+        .playhead {
+            position: absolute;
+            height: 100%;
+            left: 0;
+            top: 0;
+            width: 3px;
+            z-index: 999;
+            background-color: white;
         }
 
         #creators {
@@ -57,7 +79,8 @@
         }
 
         .transcript {
-            margin: 0 150px;
+            margin: 0 auto;
+            max-width: 1200px;
             font-size: 10pt;
 
         }
@@ -75,21 +98,115 @@
             color: lightgreen;
         }
 
-        video {
+        #videobox {
+            display: none;
             position: fixed;
             bottom: 5px;
             right: 5px;
-            height: 200px;
+            background-color: rgba(0, 0, 0, 0.3);
         }
 
         button {
             cursor: pointer;
         }
 
-        #slider {
+        .slider {
             display: inline-block;
             width: 600px;
             margin: 17px;
+        }
+
+        .vinput {
+            width: 48px;
+        }
+
+        #sorts {
+            font-weight: bold;
+        }
+
+        #sorts button {
+            border: 0;
+            margin: 0 12px;
+            background-color: transparent;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        #sorts input {
+            margin: 0 12px;
+            font-size: 1em;
+        }
+
+        #sorts .active {
+            border-bottom: 4px dotted black !important;
+        }
+
+        #creators .active {
+            background: rgba(255, 165, 0, 0.5);
+        }
+
+        #vidslider {
+            margin-top: 15px;
+            height: 10px;
+        }
+
+        #vidsliderround .noUi-connect {
+            background: #c0392b;
+        }
+
+        #vidslider .noUi-handle {
+            height: 18px;
+            width: 18px;
+            top: -5px;
+            right: -9px;
+            /* half the width */
+            border-radius: 9px;
+        }
+
+        #videobox button {
+            border: 0;
+            font-size: 15pt;
+            transition: all .25s linear;
+        }
+
+        #save {
+            display: inline-block;
+            position: absolute;
+            right: 0;
+            border: 0;
+            font-size: 15pt;
+            transition: all .25s linear;
+        }
+
+        .off {
+            filter: grayscale(100%);
+        }
+
+        #search {
+            margin: 0 12px;
+        }
+
+        .selected {
+            background: orange;
+        }
+
+        .divider {
+            margin: 0 12px;
+        }
+
+        .savedMedia {
+            margin: 2em 0;
+        }
+
+        .savedMedia li {
+            padding: 0.3em 0;
+        }
+
+        .savedMedia a {
+            font-size: 1.2em;
+            font-weight: bolder;
+            color: black;
+            border-bottom: 1px dotted black;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -97,13 +214,30 @@
 </head>
 
 <body>
-    <video></video>
-    <h3>sorting (date, term distance, asc/desc)</h3>
-    <div><button class="mode" id='chron' title="chronological">&#128197; </button><button class="mode" id="score" title="distance score">⟷</button><button id="direction" data-dir="desc">⬇</button></div>
+    <div id="videobox">
+        <video controls></video>
+        <div id="vidslider"></div>
+        <div id="vidbuttons"> <input type="text" class="vinput vidlow"><input type="text" class="vinput vidhigh"><button id="loop" title="loop" class="off">🔁</button>
+            <button id="expand" title="expand">⬅️</button> <button id="save" title="save">💾</button>
+        </div>
+    </div>
+    <div id="sorts">sorting by: <button class="mode active" id='chron' title="chronological">date</button><button class="mode" id="score" title="distance score">distance score</button><span class="divider"> | </span> direction: <button id="direction" data-dir="desc">descending</button>
+        <span class="divider"> | </span>
+        <input id="discarded" type="checkbox"><label for="discards">Just discards</label></input>
+        <input id="hassaved" type="checkbox"><label for="saved">Just w/saved video</label></input>
+        <span class="divider"></span> <span id="search" class="description">Search in results: </span> <input id="text" name="text" placeholder="" type="text">
+
+    </div>
     <div id="dates">
-        <span id="lowest"></span>
-        <div id="slider"></div>
-        <span id="highest"></span>
+        <span class="description">Start: </span><span class="lowest"></span>
+        <div class="slider"></div>
+        <span class="description">End: </span><span class="highest"></span>
+    </div>
+    <div id="queryDistance">
+        <span class="description">Term Distance: </span><span class="threshold"></span>
+        <div class="slider"></div>
+    </div>
+    <div id="string">
     </div>
     <h3><span id="results"></span> results <span id="clear">clear</span></h3>
 
@@ -113,7 +247,6 @@
     <div id="creators"><strong>networks</strong></div>
     <script src="./node_modules/nouislider/dist/nouislider.min.js"></script>
     <script src="newsscriptclient.js"></script>
-    <script src="newsscript.js"></script>
 
 </body>
 
