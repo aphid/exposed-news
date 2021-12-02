@@ -1,7 +1,27 @@
 let dom = {};
 let data;
 
-queryWords = ["covid", "prison"];
+let url = new URL(window.location.href);
+let queryWords;
+let query;
+if (url.searchParams.get('query')) {
+    query = url.searchParams.get('query');
+} else {
+    query = "prison";
+}
+queryWords = ["covid", query];
+
+
+
+for (let i of document.querySelectorAll("#querypicker a")) {
+    let shorturl = url.href.replace(url.search, "");
+    i.href = shorturl + "?query=" + i.textContent;
+    if (i.textContent === query) {
+        i.classList.add("active");
+        console.log("IT'S", query);
+    }
+}
+
 
 if (window.location.href.includes("localhost")) {
     dom.fetchurl = "http://localhost";
@@ -17,9 +37,9 @@ dom.fetchurl += ":3535";
 async function setup() {
 
 
+    let url = queryWords.join("_") + ".json";
 
-
-    data = await fetch("processed.json", {
+    data = await fetch(url, {
         cache: "reload"
     });
     data = await data.json();
@@ -254,6 +274,7 @@ async function setup() {
 
 document.querySelector("#save").addEventListener("click", async function() {
     let sendData = {
+        query: query,
         unique: dom.activeVid,
         start: dom.vidlow,
         end: dom.vidhigh,
@@ -269,9 +290,24 @@ document.querySelector("#save").addEventListener("click", async function() {
         },
         body: JSON.stringify(sendData)
     });
-    const content = await rawResponse.json();
+    const theresp = await resp.json();
 
-    console.log(content);
+    let find = dom.getById(dom.activeVid);
+    let div = find.div;
+    let discard = div.querySelector(".discard");
+    if (!div.querySelectorAll(".savedMedia").length) {
+        let saved = document.createElement("ul");
+        saved.classList.add("savedMedia");
+        let savedVid = document.createElement("li");
+        let savedAud = document.createElement("li");
+        savedVid.innerHTML = `<a href="${dom.mediaDir}${find.unique}.mp4" download>Download Video</a>`;
+        savedAud.innerHTML = `<a href="${dom.mediaDir}${find.unique}.mp3" download>Download Audio</a>`;
+        saved.appendChild(savedVid);
+        saved.appendChild(savedAud);
+        div.insertBefore(saved, discard);
+    }
+    div.classList.add("saved")
+    div.scrollIntoView();
 });
 
 
@@ -319,6 +355,7 @@ function setupButtons() {
 
         b.addEventListener("click", async function() {
             let sendData = {
+                query: query,
                 type: "discard",
                 unique: b.dataset.id,
             };
@@ -333,12 +370,13 @@ function setupButtons() {
             });
             let id = b.parentElement.dataset.id
             const content = await resp.json();
-            console.log(id);
-            let d = dom.getById(id);
-            d.discarded = true;
-            dom.hide(id);
-
-            console.log(content);
+            if (content.status === "success") {
+                console.log(id);
+                let d = dom.getById(id);
+                d.discarded = true;
+                dom.hide(id);
+                console.log(content);
+            }
         });
     }
 }
@@ -450,22 +488,22 @@ dom.updateAllTheThings = function() {
         if (dom.showSaved && !d.hasSaved) {
             result = false;
         }
-
-
         let id = d.unique;
-        for (let f of this.filts) {
-            if (!f.includes(id)) {
-                result = false;
+
+        if (!dom.showSaved && !dom.showDiscards) {
+            for (let f of this.filts) {
+                if (!f.includes(id)) {
+                    result = false;
+                }
             }
-        }
 
-        if (dom.query.length) {
-            if (!d.transcript.includes(dom.query)) {
-                result = false;
+            if (dom.query.length) {
+                if (!d.transcript.includes(dom.query)) {
+                    result = false;
+                }
             }
+
         }
-
-
         if (result) {
             visible++;
             dom.show(id)
@@ -729,6 +767,7 @@ dom.drawHtml = async function(data) {
             div.classList.add("transcript");
             div.dataset.creator = clip.creator;
             div.dataset.id = clip.unique;
+            clip.div = div;
             div.dataset.date = clip.date;
             div.dataset.distanceScore = clip.distanceScore;
             let date = moment(clip.date, "X");
@@ -751,6 +790,7 @@ dom.drawHtml = async function(data) {
 
             dom.area.appendChild(div);
             if (clip.hasSaved) {
+                div.classList.add("saved")
                 let saved = document.createElement("ul");
                 saved.classList.add("savedMedia");
                 let savedVid = document.createElement("li");
@@ -763,8 +803,7 @@ dom.drawHtml = async function(data) {
 
             }
             div.innerHTML = div.innerHTML + `
-        <button data-id="${clip.unique}" class="discard">discard &#10060;</button>
-        <hr>`;
+        <button data-id="${clip.unique}" class="discard">discard &#10060;</button>`;
         }
     }
     processDates();
